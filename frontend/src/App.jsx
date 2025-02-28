@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { FaCalendarAlt, FaTrash, FaCheck } from "react-icons/fa";
+import { FaCalendarAlt, FaTrash, FaCheck, FaEdit } from "react-icons/fa";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Calendar from "react-calendar";
@@ -93,17 +93,8 @@ function App() {
         <nav>
           <ul>
             <li>Upcoming</li>
-            <li className="active">Today</li>
-            <li>Calendar</li>
-            <li>Sticky Wall</li>
           </ul>
         </nav>
-        <h3>Lists</h3>
-        <ul>
-          <li>Personal</li>
-          <li>Work</li>
-          <li>List 1</li>
-        </ul>
       </aside>
 
       <main className="task-section">
@@ -129,11 +120,7 @@ function App() {
         </section>
         <ul className="task-list">
           {todos.map(todo => (
-            <li key={todo._id} className="task-item" onClick={() => {
-              setSelectedTask(todo);
-              setEditedTask(todo.task);
-              setEditedDueDate(todo.dueDate);
-            }}>
+            <li key={todo._id} className="task-item">
               <span
                 className={`task-text ${todo.completed ? "completed" : ""}`}
                 onClick={() => toggleComplete(todo._id, todo.completed)}
@@ -143,6 +130,24 @@ function App() {
               </span>
               <span className="due-date">{formatDate(todo.dueDate)}</span>
               <FaCalendarAlt className="calendar-icon" aria-hidden="true" />
+              <button
+                className="edit-btn"
+                onClick={() => {
+                  setSelectedTask(todo);
+                  setEditedTask(todo.task);
+                  setEditedDueDate(todo.dueDate);
+                }}
+                aria-label={`Edit ${todo.task}`}
+              >
+                <FaEdit />
+              </button>
+              <button
+                className="complete-btn"
+                onClick={() => toggleComplete(todo._id, todo.completed)}
+                aria-label={`Mark ${todo.task} as complete`}
+              >
+                <FaCheck />
+              </button>
               <button className="delete-btn" onClick={() => deleteTodo(todo._id)} aria-label={`Delete ${todo.task}`}>
                 <FaTrash />
               </button>
@@ -174,14 +179,6 @@ function App() {
             dateFormat="yyyy-MM-dd"
             aria-label="Due date"
           />
-          <h3>List</h3>
-          <p>Personal</p>
-          <h3>Tags</h3>
-          <p>Tag 1</p>
-          <h3>Subtasks</h3>
-          <ul>
-            <li>Subtask</li>
-          </ul>
           <button className="delete-task" onClick={() => deleteTodo(selectedTask._id)} aria-label="Delete task">
             <FaTrash /> Delete Task
           </button>

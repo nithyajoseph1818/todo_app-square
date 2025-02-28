@@ -132,12 +132,32 @@ body {
   margin-right: 10px;
 }
 
-.delete-btn {
+.edit-btn, .complete-btn, .delete-btn {
   background: none;
   border: none;
-  color: #dc3545;
   cursor: pointer;
   transition: color 0.3s;
+  margin-right: 10px;
+}
+
+.edit-btn {
+  color: #007bff;
+}
+
+.edit-btn:hover {
+  color: #0056b3;
+}
+
+.complete-btn {
+  color: #28a745;
+}
+
+.complete-btn:hover {
+  color: #218838;
+}
+
+.delete-btn {
+  color: #dc3545;
 }
 
 .delete-btn:hover {
@@ -159,7 +179,6 @@ body {
 .overdue {
   background-color: #ffc107; /* Orange for overdue tasks */
 }
-
 
 .task-details {
   width: 300px;
