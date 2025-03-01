@@ -39,7 +39,7 @@ mern-todo-app/
 
 ### 1️⃣ Clone the Repository
 ```bash
-git clone https://github.com/yourusername/mern-todo-app.git
+git clone https://github.com/nithyajoseph1818/todo_app-square.git
 cd mern-todo-app
 ```
 
