@@ -27,7 +27,7 @@ function App() {
     const response = await axios.get(API_URL);
     setTodos(response.data.map(todo => ({
       ...todo,
-      dueDate: new Date(todo.dueDate) // Ensure dueDate is a Date object
+      dueDate: new Date(todo.dueDate) 
     })));
   };
 
@@ -142,7 +142,7 @@ function App() {
             placeholderText="Select due date"
             dateFormat="yyyy-MM-dd"
             aria-label="Due date"
-            minDate={new Date()} // Prevent selecting past dates
+            minDate={new Date()} 
           />
           <button onClick={addTodo} aria-label="Add task">Add</button>
         </section>
@@ -206,7 +206,7 @@ function App() {
             onChange={(date) => setEditedDueDate(date)}
             dateFormat="yyyy-MM-dd"
             aria-label="Due date"
-            minDate={new Date()} // Prevent selecting past dates
+            minDate={new Date()} 
           />
           <button className="delete-task" onClick={() => deleteTodo(selectedTask._id)} aria-label="Delete task">
             <FaTrash /> Delete Task
