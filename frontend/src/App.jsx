@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { FaCalendarAlt, FaTrash, FaCheck, FaEdit } from "react-icons/fa";
+import { FaCalendarAlt, FaTrash, FaCheck, FaEdit, FaTimes } from "react-icons/fa";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Calendar from "react-calendar";
@@ -17,6 +17,7 @@ function App() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [editedTask, setEditedTask] = useState("");
   const [editedDueDate, setEditedDueDate] = useState(null);
+  const [showUpcoming, setShowUpcoming] = useState(false);
 
   useEffect(() => {
     fetchTodos();
@@ -32,7 +33,8 @@ function App() {
 
   const addTodo = async () => {
     if (!task.trim() || !dueDate) return;
-    const response = await axios.post(API_URL, { task, dueDate: dueDate.toISOString(), completed: false });
+    const adjustedDueDate = new Date(dueDate.setHours(0, 0, 0, 0)).toISOString();
+    const response = await axios.post(API_URL, { task, dueDate: adjustedDueDate, completed: false });
     setTodos([...todos, { ...response.data, dueDate: new Date(response.data.dueDate) }]);
     setTask("");
     setDueDate(null);
@@ -50,9 +52,10 @@ function App() {
 
   const saveEditedTask = async () => {
     if (!editedTask.trim() || !editedDueDate) return;
+    const adjustedDueDate = new Date(editedDueDate.setHours(0, 0, 0, 0)).toISOString();
     const response = await axios.put(`${API_URL}/${selectedTask._id}`, {
       task: editedTask,
-      dueDate: editedDueDate.toISOString(),
+      dueDate: adjustedDueDate,
       completed: selectedTask.completed
     });
     setTodos(todos.map(todo => (todo._id === selectedTask._id ? { ...response.data, dueDate: new Date(response.data.dueDate) } : todo)));
@@ -86,20 +89,44 @@ function App() {
     return date instanceof Date && !isNaN(date) ? date.toLocaleDateString() : "Invalid Date";
   };
 
+  const filterUpcomingTasks = () => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return todos.filter(todo => todo.dueDate >= today && !todo.completed);
+  };
+
+  const filterTodaysTasks = () => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return todos.filter(todo => {
+      const taskDate = new Date(todo.dueDate);
+      taskDate.setHours(0, 0, 0, 0);
+      return taskDate.getTime() === today.getTime() && !todo.completed;
+    });
+  };
+
   return (
     <div className="app-container">
       <aside className="sidebar">
         <h2>Menu</h2>
         <nav>
           <ul>
-            <li>Upcoming</li>
+            <li onClick={() => setShowUpcoming(true)}>Upcoming</li>
           </ul>
         </nav>
       </aside>
 
       <main className="task-section">
         <header>
-          <h1>Today <span className="task-count">{todos.length}</span></h1>
+          <h1>
+            {showUpcoming ? "Upcoming Tasks" : "Today"}
+            <span className="task-count">{showUpcoming ? filterUpcomingTasks().length : filterTodaysTasks().length}</span>
+            {showUpcoming && (
+              <button className="close-btn" onClick={() => setShowUpcoming(false)} aria-label="Close upcoming tasks">
+                <FaTimes />
+              </button>
+            )}
+          </h1>
         </header>
         <section className="add-task">
           <input
@@ -115,11 +142,12 @@ function App() {
             placeholderText="Select due date"
             dateFormat="yyyy-MM-dd"
             aria-label="Due date"
+            minDate={new Date()} // Prevent selecting past dates
           />
           <button onClick={addTodo} aria-label="Add task">Add</button>
         </section>
         <ul className="task-list">
-          {todos.map(todo => (
+          {(showUpcoming ? filterUpcomingTasks() : filterTodaysTasks()).map(todo => (
             <li key={todo._id} className="task-item">
               <span
                 className={`task-text ${todo.completed ? "completed" : ""}`}
@@ -178,6 +206,7 @@ function App() {
             onChange={(date) => setEditedDueDate(date)}
             dateFormat="yyyy-MM-dd"
             aria-label="Due date"
+            minDate={new Date()} // Prevent selecting past dates
           />
           <button className="delete-task" onClick={() => deleteTodo(selectedTask._id)} aria-label="Delete task">
             <FaTrash /> Delete Task

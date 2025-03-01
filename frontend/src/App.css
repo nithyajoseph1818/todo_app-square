@@ -226,3 +226,46 @@ body {
 .save-task:hover {
   background-color: #218838;
 }
+/* Close Button Styles */
+.close-btn {
+  background-color: transparent;
+  border: none;
+  color: #ff5f5f; /* Red color for the close icon */
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  margin-left: 1rem;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.close-btn:hover {
+  color: #ff3333; /* Darker red on hover */
+  transform: scale(1.1); /* Slightly enlarge on hover */
+}
+
+.close-btn:focus {
+  outline: none;
+}
+
+/* Optional: Add a tooltip for better accessibility */
+.close-btn::after {
+  content: attr(aria-label);
+  position: absolute;
+  background-color: #333;
+  color: #fff;
+  padding: 0.5rem;
+  border-radius: 4px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  white-space: nowrap;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.close-btn:hover::after {
+  opacity: 1;
+}
